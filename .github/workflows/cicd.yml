@@ -14,12 +14,12 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build Docker Image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/cicdf25:latest .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/cicdf25:cicdf25 .
 
       - name: Push Docker Image
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker push ${{ secrets.DOCKER_USERNAME }}/cicdf25:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/cicdf25:cicdf25
 
       - name: Setup kubeconfig
         run: |
@@ -28,7 +28,7 @@ jobs:
 
       - name: Replace Image in Deployment Template
         run: |
-          IMAGE="${{ secrets.DOCKER_USERNAME }}/cicdf25:latest"
+          IMAGE="${{ secrets.DOCKER_USERNAME }}/cicdf25:cicdf25"
           sed "s|DOCKER_IMAGE_PLACEHOLDER|$IMAGE|g" k8s/deployment.template.yaml > k8s/deployment.yaml
 
       - name: Deploy to Kubernetes
@@ -40,4 +40,4 @@ jobs:
       - name: Trivy Security Scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ secrets.DOCKER_USERNAME }}/cicdf25:latest
+          image-ref: ${{ secrets.DOCKER_USERNAME }}/cicdf25:cicdf25
