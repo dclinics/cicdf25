@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cicdf25
+  labels:
+    app: cicdf25
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cicdf25
+  template:
+    metadata:
+      labels:
+        app: cicdf25
+    spec:
+      containers:
+        - name: cicdf25
+          image: DOCKER_IMAGE_PLACEHOLDER
+          ports:
+            - containerPort: 5000
+          env:
+            - name: COLOR
+              value: "blue"
