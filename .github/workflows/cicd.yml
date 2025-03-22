@@ -1,5 +1,5 @@
 
-name: Deploy Flask App
+name: Deploy Python App
 
 on:
   push:
@@ -21,23 +21,23 @@ jobs:
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           docker push ${{ secrets.DOCKER_USERNAME }}/cicdf25:cicdf25
 
-      - name: Setup kubeconfig
-        run: |
-          mkdir -p ~/.kube
-          echo "${{ secrets.KUBECONFIG_DATA }}" > ~/.kube/config
+      # - name: Setup kubeconfig
+      #   run: |
+      #     mkdir -p ~/.kube
+      #     echo "${{ secrets.KUBECONFIG_DATA }}" > ~/.kube/config
 
-      - name: Replace Image in Deployment Template
-        run: |
-          IMAGE="${{ secrets.DOCKER_USERNAME }}/cicdf25:cicdf25"
-          sed "s|DOCKER_IMAGE_PLACEHOLDER|$IMAGE|g" k8s/deployment.template.yaml > k8s/deployment.yaml
+      # - name: Replace Image in Deployment Template
+      #   run: |
+      #     IMAGE="${{ secrets.DOCKER_USERNAME }}/cicdf25:cicdf25"
+      #     sed "s|DOCKER_IMAGE_PLACEHOLDER|$IMAGE|g" k8s/deployment.template.yaml > k8s/deployment.yaml
 
-      - name: Deploy to Kubernetes
-        run: |
-          kubectl apply -f k8s/deployment.yaml
-          kubectl apply -f k8s/service.yaml
-          kubectl rollout status deployment/cicdf25
+      # - name: Deploy to Kubernetes
+      #   run: |
+      #     kubectl apply -f k8s/deployment.yaml
+      #     kubectl apply -f k8s/service.yaml
+      #     kubectl rollout status deployment/cicdf25
 
-      - name: Trivy Security Scan
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ secrets.DOCKER_USERNAME }}/cicdf25:cicdf25
+      # - name: Trivy Security Scan
+      #   uses: aquasecurity/trivy-action@master
+      #   with:
+      #     image-ref: ${{ secrets.DOCKER_USERNAME }}/cicdf25:cicdf25
