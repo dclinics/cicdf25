@@ -1,4 +1,4 @@
-from flask import Flask, render_template_string, request, make_response
+from flask import Flask, render_template_string, request
 import os
 
 app = Flask(__name__)
@@ -12,18 +12,34 @@ def add_security_headers(response):
     response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
     return response
 
-@app.route('/')
-@app.route('/<color>')
-def display_pattern(color=None):
-    color = color or os.getenv('COLOR', 'red')
-    html = f"""
-    <html><head><style>
-    .moving-text {{ font-size: 48px; animation: move 5s linear infinite; }}
-    @keyframes move {{ 0% {{ top: 0; left: 0; }} 100% {{ top: 0; left: 0; }} }}
-    </style></head>
-    <body style='background-color:{color}'><div class='moving-text'>Happy Learning!</div></body></html>
-    """
-    return render_template_string(html)
+@app.route('/', methods=['GET', 'POST'])
+def home():
+    if request.method == 'POST':
+        name = request.form.get('name', 'Guest')
+        color = request.form.get('color', os.getenv('COLOR', 'red'))
+        return render_template_string(f"""
+        <html>
+            <head><title>Welcome</title></head>
+            <body style='background-color:{color}; text-align:center; padding-top:50px; color:white;'>
+                <h1>Welcome, {name}!</h1>
+                <p>Thanks for joining Devopclinics community 💡</p>
+            </body>
+        </html>
+        """)
+    
+    return render_template_string("""
+    <html>
+        <head><title>Join Us</title></head>
+        <body style="text-align:center; padding-top:50px;">
+            <h2>Enter Your Name and Favorite Color</h2>
+            <form method="POST">
+                <input type="text" name="name" placeholder="Your Name" required><br><br>
+                <input type="text" name="color" placeholder="Favorite Color" required><br><br>
+                <button type="submit">Submit</button>
+            </form>
+        </body>
+    </html>
+    """)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
