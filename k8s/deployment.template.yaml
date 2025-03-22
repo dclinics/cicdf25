@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cicdf25
+  name: cicdf25a
   labels:
-    app: cicdf25
+    app: cicdf25a
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cicdf25
+      app: cicdf25a
   template:
     metadata:
       labels:
-        app: cicdf25
+        app: cicdf25a
     spec:
       containers:
-        - name: cicdf25
+        - name: cicdf25a
           image: DOCKER_IMAGE_PLACEHOLDER
           ports:
             - containerPort: 5000
